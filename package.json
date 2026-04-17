@@ -1,0 +1,27 @@
+{
+  "name": "gh-actionable",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Local TypeScript CLI for conservatively surfacing actionable GitHub issues",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "gh-actionable": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@octokit/rest": "^22.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}

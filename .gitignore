@@ -1,0 +1,16 @@
+node_modules
+dist
+.env
+.DS_Store
+coverage
+.vitest
+*.tsbuildinfo
+
+# Local workflow/tooling metadata
+.claude/
+.codex/
+.cursor/
+.vscode/
+.idea/
+CLAUDE.md
+CLAUDE.local.md
