@@ -82,25 +82,25 @@ node dist/index.js --repo owner/name
 **Repo scan with table output:**
 
 ```bash
-node dist/index.js --repo ethereum/ethereum-org-website
+node dist/index.js --repo microsoft/vscode
 ```
 
 **Repo scan with JSON output:**
 
 ```bash
-node dist/index.js --repo ethereum/ethereum-org-website --json
+node dist/index.js --repo microsoft/vscode --json
 ```
 
 **Org scan with table output:**
 
 ```bash
-node dist/index.js --org ethereum
+node dist/index.js --org microsoft
 ```
 
 **Org scan with JSON output:**
 
 ```bash
-node dist/index.js --org ethereum --json
+node dist/index.js --org microsoft --json
 ```
 
 If linked locally through npm, the binary name is:
