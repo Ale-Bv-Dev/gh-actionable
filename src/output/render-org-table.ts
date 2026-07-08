@@ -1,5 +1,6 @@
 import type { OrgScanResult } from "../org-scan.js"
 import type { EvaluatedIssue } from "../scan.js"
+import { sanitizeForTerminal } from "./sanitize.js"
 
 const EMPTY_PLACEHOLDER = "(none)"
 const LIST_SEPARATOR = ", "
@@ -52,7 +53,13 @@ export function renderOrgTable(result: OrgScanResult): string {
 function renderIssueBlock(evaluated: EvaluatedIssue): string[] {
   const { issue, warnings, signals, whySelected } = evaluated
   const repoLabel = `${issue.repo.owner}/${issue.repo.name}`
-  const labels = issue.labels.length > 0 ? issue.labels.join(LIST_SEPARATOR) : EMPTY_PLACEHOLDER
+  const title = sanitizeForTerminal(issue.title)
+  const url = sanitizeForTerminal(issue.url)
+  const whyText = sanitizeForTerminal(whySelected.text)
+  const labels =
+    issue.labels.length > 0
+      ? issue.labels.map((l) => sanitizeForTerminal(l)).join(LIST_SEPARATOR)
+      : EMPTY_PLACEHOLDER
   const warningsText =
     warnings.length > 0
       ? warnings.map((w) => w.message).join(MESSAGE_SEPARATOR)
@@ -61,12 +68,12 @@ function renderIssueBlock(evaluated: EvaluatedIssue): string[] {
     signals.length > 0 ? signals.map((s) => s.message).join(MESSAGE_SEPARATOR) : EMPTY_PLACEHOLDER
 
   return [
-    `#${issue.number}  ${issue.title}  [${repoLabel}]`,
+    `#${issue.number}  ${title}  [${repoLabel}]`,
     `${INDENT}labels:   ${labels}`,
     `${INDENT}updated:  ${issue.updatedAt}`,
     `${INDENT}warnings: ${warningsText}`,
     `${INDENT}signals:  ${signalsText}`,
-    `${INDENT}why:      ${whySelected.text}`,
-    `${INDENT}url:      ${issue.url}`,
+    `${INDENT}why:      ${whyText}`,
+    `${INDENT}url:      ${url}`,
   ]
 }

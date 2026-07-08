@@ -226,4 +226,24 @@ describe("renderTable", () => {
     const result = makeResult([makeEvaluated()])
     expect(renderTable(result)).toBe(renderTable(result))
   })
+
+  it("strips ANSI, control, and bidi-override sequences from a hostile issue title", () => {
+    const hostileTitle = "\x1B[31m\x1B[2J\r\x1B]0;pwn\x07\u202EFix homepage typo"
+    const out = renderTable(makeResult([makeEvaluated({ issue: { title: hostileTitle } })]))
+
+    expect(out).not.toMatch(/\x1B/)
+    expect(out).not.toMatch(/[\x00-\x09\x0B-\x1F\x7F-\x9F]/)
+    expect(out).not.toMatch(/[\u202A-\u202E\u2066-\u2069]/)
+  })
+
+  it("strips ANSI, control, and bidi-override sequences from a hostile label", () => {
+    const hostileLabel = "\x1B[31m\x1B[2J\r\x1B]0;pwn\x07\u202Egood first issue"
+    const out = renderTable(
+      makeResult([makeEvaluated({ issue: { labels: [hostileLabel] } })])
+    )
+
+    expect(out).not.toMatch(/\x1B/)
+    expect(out).not.toMatch(/[\x00-\x09\x0B-\x1F\x7F-\x9F]/)
+    expect(out).not.toMatch(/[\u202A-\u202E\u2066-\u2069]/)
+  })
 })

@@ -320,6 +320,18 @@ Fix: replaced the single-page fetch with a loop in `src/github/fetch.ts`:
 
 All 183 tests passing. Typecheck clean. Build clean.
 
+## 2026-07-08 — Terminal output sanitization
+
+### F-07: sanitize untrusted text in terminal table output
+
+Issue titles and label names are untrusted input (controlled by whoever opens the issue in a scanned repo) but were written raw into the terminal table renderers. A hostile title or label containing ANSI escapes, OSC sequences (terminal title injection), C0/C1 control characters, or Unicode bidi overrides (Trojan Source, U+202E) would be emitted verbatim to the user's terminal, enabling output spoofing (hiding/rewriting the `warnings`/`why` lines) and terminal manipulation.
+
+Fix: added a pure `src/output/sanitize.ts` exporting `sanitizeForTerminal()`, which strips OSC sequences, ANSI escapes, C0/C1 control chars, and bidi-override code points, in that order. Applied it in `render-table.ts` and `render-org-table.ts` to the issue title, each label, `whySelected.text`, and `issue.url`. `repoLabel` (owner/name) is left as-is since it is already validated. JSON renderers and filter/decision semantics are untouched.
+
+2 tests added to `tests/output.test.ts` covering a hostile title and a hostile label combining ANSI color, screen-clear, OSC terminal-title injection, a carriage return, and a bidi override.
+
+All 185 tests passing. Typecheck clean. Build clean.
+
 ## Current status
 
 Current verified status:
@@ -342,5 +354,6 @@ Current verified status:
 17. Smoke-test fix F-04 (Status: Stale negative label): COMPLETED
 18. Smoke-test fix F-05 (avoid deprecated CONTRIBUTING.md check): COMPLETED
 19. Fix F-06 (paginate issue comments up to 3 pages x 100): COMPLETED
-20. typecheck passing, 183/183 tests passing
-21. v1 functional scope is now implemented
+20. Fix F-07 (sanitize untrusted text in terminal table output): COMPLETED
+21. typecheck passing, 185/185 tests passing
+22. v1 functional scope is now implemented
