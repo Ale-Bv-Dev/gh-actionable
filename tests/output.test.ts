@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest"
 
 import { renderJson } from "../src/output/render-json.js"
 import { renderTable } from "../src/output/render-table.js"
+import { sanitizeForTerminal } from "../src/output/sanitize.js"
 import type { ScanResult, EvaluatedIssue } from "../src/scan.js"
 import type { NormalizedIssue, IssueCommentMeta } from "../src/domain/issue.js"
 import type { GhostWarning, SoftSignal, WhySelectedResult } from "../src/domain/types.js"
@@ -245,5 +246,14 @@ describe("renderTable", () => {
     expect(out).not.toMatch(/\x1B/)
     expect(out).not.toMatch(/[\x00-\x09\x0B-\x1F\x7F-\x9F]/)
     expect(out).not.toMatch(/[\u202A-\u202E\u2066-\u2069]/)
+  })
+})
+
+// === sanitizeForTerminal ===
+
+describe("sanitizeForTerminal", () => {
+  it("preserves legitimate unicode (accents, emoji, em-dash, CJK) unchanged", () => {
+    const text = "Fix caf\u00E9 bug \u{1F389} \u2014 \u4FEE\u5FA9\u95EE\u9898 \u00FCn\u00EFc\u00F6d\u00E9"
+    expect(sanitizeForTerminal(text)).toBe(text)
   })
 })
